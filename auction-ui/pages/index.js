@@ -34,7 +34,7 @@ export default function Home() {
       </h1>
       <div className="max-w-7xl flex flex-wrap">
         <Link href="/auctions/create">
-          <a>
+          <a className="m-2">
             <Card
               newCard
               imgSrc={minionGavel}
@@ -44,7 +44,7 @@ export default function Home() {
         </Link>
         {auctions.map((auctionAddress, index) => (
           <Link href={`/auctions/${index}`}>
-            <a>
+            <a className="m-2">
               <Card
                 auctionTitle={`Auction #${index}`}
                 address={auctionAddress}

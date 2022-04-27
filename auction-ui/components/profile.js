@@ -1,4 +1,4 @@
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount, useConnect, useNetwork } from 'wagmi';
 
 function truncateAddress(addr) {
   return `${addr.slice(0, 6)}...${addr.slice(addr.length - 5)}`;
@@ -8,21 +8,21 @@ export default function Profile() {
   const [{ data: connectData, error: connectError }, connect] = useConnect();
   const { connected } = connectData;
   const [{ data: account }, disconnect] = useAccount();
+  const [{ data, error, loading }, switchNetwork] = useNetwork();
 
   // const chainId = chain.polygonMumbai.id;
   const chainId = 1666700000;
 
   if (connected) {
-    // const wrongNetwork = activeChain?.id !== chainId;
+    const wrongNetwork = data.chain?.id !== chainId;
 
     return (
       <button
-        onClick={disconnect}
+        onClick={wrongNetwork ? () => switchNetwork(chainId) : disconnect}
         className="bg-green-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-red-500 rounded m-2"
       >
         <div>
-          {/* {wrongNetwork && 'Switch Network'} */}
-          {truncateAddress(account?.address)}
+          {wrongNetwork ? 'Switch Network' : truncateAddress(account?.address)}
         </div>
       </button>
     );

@@ -11,7 +11,7 @@ export default function Card({
   newCard,
 }) {
   return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg m-4 bg-gradient-to-br from-purple-800 via-violet-900 to-purple-800 h-full">
+    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-gradient-to-br from-purple-800 via-violet-900 to-purple-800 h-full">
       <Image
         className="w-full"
         src={imgSrc || sushi}
