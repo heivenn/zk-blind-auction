@@ -5,15 +5,12 @@ import { buildPoseidonOpt as buildPoseidon } from 'circomlibjs';
 import AuctionDetails from '../../components/auction-details';
 import { generateVerifierCalldata } from '../../zk/highest_bidder_proof';
 import {
-  useAccount,
   useContract,
   useContractRead,
   useContractWrite,
   useProvider,
   useSigner,
 } from 'wagmi';
-import cn from 'classnames';
-import Spinner from '../../components/spinner';
 
 import { contractAddresses } from '../../utils/contracts';
 import blindAuctionFactoryAbi from '../../utils/abis/BlindAuctionFactory.json';
@@ -61,7 +58,6 @@ const witnessInputs = {
 const witnessPlaceholder = JSON.stringify(witnessInputs);
 
 export default function Auction() {
-  const [accountQuery, disconnect] = useAccount();
   const [parseError, setParseError] = useState('');
   const [secret, setSecret] = useState(undefined);
   const [winner, setWinner] = useState(undefined);
@@ -83,13 +79,24 @@ export default function Auction() {
     signerOrProvider: signer.data || provider,
   });
 
-  const [{ data: beneficiary }] = useContractRead(
+  const [{ data: beneficiary }, readBeneficiary] = useContractRead(
     {
       addressOrName: auction || '',
       contractInterface: blindAuctionAbi.abi,
-      signerOrProvider: provider,
+      signerOrProvider: signer.data || provider,
     },
-    'beneficiary'
+    'beneficiary',
+    { skip: true }
+  );
+
+  const [{ data: auctioneer }, readAuctioneer] = useContractRead(
+    {
+      addressOrName: auction || '',
+      contractInterface: blindAuctionAbi.abi,
+      signerOrProvider: signer.data || provider,
+    },
+    'auctioneer',
+    { skip: true }
   );
 
   const [{ data: bidData, error: bidError, loading: bidLoading }, bid] =
@@ -124,19 +131,19 @@ export default function Auction() {
       'getBids',
       { skip: true }
     );
-  const [{ data: winnerAddress }] = useContractRead(
+  const [{ data: winnerAddress }, readWinnerAddress] = useContractRead(
     {
       addressOrName: auction || '',
       contractInterface: blindAuctionAbi.abi,
-      signerOrProvider: provider,
+      signerOrProvider: signer.data || provider,
     },
     'highestBidder'
   );
-  const [{ data: winningBid }] = useContractRead(
+  const [{ data: winningBid }, readWinnerBid] = useContractRead(
     {
       addressOrName: auction || '',
       contractInterface: blindAuctionAbi.abi,
-      signerOrProvider: provider,
+      signerOrProvider: signer.data || provider,
     },
     'highestBid'
   );
@@ -152,35 +159,28 @@ export default function Auction() {
   }, [id]);
 
   useEffect(() => {
+    if (auction) {
+      async function getAuctionDetails() {
+        readBeneficiary();
+        readAuctioneer();
+        readWinnerAddress();
+        readWinnerBid();
+      }
+      getAuctionDetails();
+    }
+  }, [auction]);
+
+  useEffect(() => {
     if (winnerAddress !== ethers.constants.AddressZero) {
       setWinner(winnerAddress);
     }
   }, [winnerAddress]);
 
-  // const getValue = async () => {
-  //   const { ethereum } = window;
-
-  //   if (ethereum) {
-  //     const provider = new ethers.providers.Web3Provider(ethereum);
-  //     const signer = provider.getSigner();
-  //     const contract = new ethers.Contract(
-  //       '0xFb60994A081A748F7657028b077905F23201d2e3',
-  //       storageAbi.abi,
-  //       signer
-  //     );
-  //     await contract.deployed();
-  //     console.log({ provider, contract });
-
-  //     const val = await contract.retrieve();
-  //     console.log(val);
-  //     return val;
-  //   }
-  // };
   const handleBid = async () => {
     if (auction) {
-      const amount = parseInt(inputRef.current.value).toString();
+      const amount = parseInt(inputRef.current.value);
       if (Number.isInteger(amount)) {
-        const bidAmount = ethers.utils.parseEther(amount);
+        const bidAmount = ethers.utils.parseEther(amount.toString());
         if (bidAmount.gt(0)) {
           const poseidon = await buildPoseidon();
           const blindingNumber = genRandomNumber();
@@ -195,7 +195,7 @@ export default function Auction() {
             blindedBid.toString()
           );
           const deposit = ethers.utils.parseEther('1');
-          write({
+          bid({
             args: blindedBid.toHexString(),
             overrides: { value: deposit },
           });
@@ -242,10 +242,11 @@ export default function Auction() {
         <AuctionDetails
           auctionContract={auction}
           beneficiary={beneficiary}
-          // auctioneer={auctioneer}
+          auctioneer={auctioneer}
           // bidEnd={}
           // revealEnd={}
           // paymentEnd={}
+          secret={secret}
           winner={winner}
           winningBid={winningBid}
           inputRef={inputRef}
@@ -265,20 +266,3 @@ export default function Auction() {
     </Layout>
   );
 }
-
-// const getKeyboards = async () => {
-//   if (ethereum && connectedAccount) {
-//     const provider = new ethers.providers.Web3Provider(ethereum);
-//     const signer = provider.getSigner();
-//     const keyboardsContract = new ethers.Contract(
-//       contractAddress,
-//       contractABI,
-//       signer
-//     );
-
-//     const keyboards = await keyboardsContract.getKeyboards();
-//     console.log('Retrieved keyboards...', keyboards);
-//     setKeyboards(keyboards);
-//   }
-// };
-// useEffect(() => getKeyboards(), [connectedAccount]);

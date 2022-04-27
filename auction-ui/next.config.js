@@ -8,9 +8,6 @@ const nextConfig = {
     config.experiments = { asyncWebAssembly: true };
     return config;
   },
-  images: {
-    domains: ['media.giphy.com'],
-  },
 };
 
 module.exports = nextConfig;
