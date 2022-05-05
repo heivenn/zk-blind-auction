@@ -16,14 +16,6 @@ export default function CreateAuction() {
       },
       'createBlindAuctionProxy'
     );
-  // useContractEvent(
-  //   {
-  //     addressOrName: blindAuctionFactoryAddress,
-  //     contractInterface: blindAuctionFactoryAbi.abi,
-  //   },
-  //   'BlindAuctionCloneCreated',
-  //   (event) => console.log(event)
-  // );
 
   const createAuction = async (event) => {
     event.preventDefault(); // don't redirect the page

@@ -1,7 +1,6 @@
 import { generateWitness } from './generate_witness';
 import { groth16 } from 'snarkjs';
 import { utils } from 'ffjavascript';
-import { parseEther } from 'ethers/lib/utils';
 
 const { unstringifyBigInts } = utils;
 
@@ -12,11 +11,6 @@ const { unstringifyBigInts } = utils;
  *
  */
 export async function generateVerifierCalldata(input) {
-  // const formatted = {
-  //   blindedBids: input.blindedBids,
-  //   bids: input.bids.map(([amount, secret]) => [parseEther(amount), secret]),
-  // };
-  // console.log({ formatted });
   let generateWitnessSuccess = true;
   let witness = await generateWitness(input)
     .then()
