@@ -12,7 +12,7 @@ This was created as a final project for Harmony blockchain's [Zero Knowledge Uni
 
 **HighestBidderVerifier.sol** - Auto-generated from the circuit compilation process.
 
-They are deployed on Harmony testnet at the addresses shown in `auction-ui/utils/contracts.js`.
+They are deployed on Harmony mainnet at the addresses shown in `auction-ui/utils/contracts.js`.
 
 ## Auction UI
 
@@ -35,3 +35,14 @@ The outputs are:
 3. A bid validity array corresponding to the number of bids, with 0 meaning an invalid bid and 1 meaning a valid bid. This is used to determine who gets their deposit refunded.
 
 4. The blinded bid commitments that are public and also live in the contract.
+
+
+## Possible Improvements
+
+1. Setup winner payment to use contract winnerPay function.
+
+2. Increase 4 bids to a larger number, calling the circuit with arbitrary zero bids when the limit is not reached.
+
+3. Use PLONK instead of Groth16 to eliminate the need for trusted setup.
+
+4. Implement custody of an item that the winner will receive upon payment, such as an NFT.

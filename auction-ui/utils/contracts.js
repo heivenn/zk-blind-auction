@@ -1,13 +1,13 @@
-// polygon mumbai
+// harmony testnet
 // export const contractAddresses = {
-//   blindAuction: '0x183e15EF50065729d6DB5891A19727052EB7A7dD',
-//   blindAuctionFactory: '0x6b8C24b67bEc0F1B1003ba020e55921Ef632a582',
-//   verifier: '0x2FDB8829F1e28370796E10f6E858624D329E148c',
+//   blindAuction: '0x526d48EE3c7c481a701D595a7a70a52d01b99CE8',
+//   blindAuctionFactory: '0x9372aB14D3c5ec5163201464388FCF1d29Be9A45',
+//   verifier: '0xEEA04DA95790A50412121DaEebE06Da75a988903',
 // };
 
-// harmony testnet
+// harmony mainnet
 export const contractAddresses = {
-  blindAuction: '0x246d376aef3524a81F70413c6aD3F35e163b1356',
-  blindAuctionFactory: '0x4397b5172aFbc1a98377bA62BDCba9aECD758e79',
-  verifier: '0xE29030670Ad5222a8905B3654A72d987735798Cc',
+  blindAuction: '0x16fBBA992A585E97a8156dF262A84485c278162e',
+  blindAuctionFactory: '0xE826F52eE4B17e81d22741dFc85490db1Be2e4DF',
+  verifier: '0xab940FD37F3c0DA9ad0C1022D695d8B78DF78b57',
 };

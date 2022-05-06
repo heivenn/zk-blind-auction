@@ -136,7 +136,7 @@ contract BlindAuction is Initializable {
         uint256[2] memory c,
         uint256[10] memory input
     ) external onlyAuctioneer {
-        uint8 bidsLength = bids.length;
+        uint8 bidsLength = uint8(bids.length);
         // check that bids correspond to blindedBids in input values
         for (uint8 i = 0; i < bidsLength;) {
             require(
